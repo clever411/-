@@ -1,0 +1,152 @@
+<!doctype html>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</script>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="../styles.css">
+	</head>
+
+	<body>
+		<main>
+			<a id='thehead' href="../index.html"> ОЛП МАИ </a>
+			<h2> ОЛП МАИ 2019-2020, 1-ый курс. Соревнование 5 </h1>
+			<nav>
+				<div id="navcol1">
+					<a href="F.html"> F: Подсчёт анаграмм </a>
+					<a href="G.html"> G: Геометрическая прогрессия </a>
+				</div>
+				<div id="navcol2">
+					<a href="I.html"> I: Странные кости </a>
+					<a href="K.html"> K: Подготовка </a>
+				</div>
+			</nav>	
+			<h3> Задача K: Подготовка </h2>
+			<h4> ОБЩАЯ ИДЕЯ </h4>
+			<p>
+				Математическим ожиданием зовётся сумма произведений 
+				значений на вероятность их выпадения:
+				$$\sum_{i=1}^n p_ia_i$$
+				Нам нужно сопоставить значения и вероятности так,
+				чтобы математическое ожидание получилось наибольшим.
+				Этого можно достичь, если у большего значения будет
+				большая вероятность, поэтому мы отсортируем оба
+				массива (значений и вероятностей) и просуммируем
+				произведение всех соответствующих элементов.
+			</p>
+			<p>
+				Также стоит заметить, что вероятность нам задана в
+				формате $$p_i=\frac{P_i}{\sum P},$$ поэтому формула суммы 
+				математического ожидания получается
+				$$\sum_{i=1}^n \left( a_i \frac{P_i}{ \sum_j^n P } \right).$$
+				Мы можем вынести сумму вероятностей, так как она
+				не зависит от \(i\):
+				$$\frac{1}{\sum P} \sum_{i=1}^n a_iP_i$$
+			</p>
+			<h4> КОД </h4>
+			<p>
+<pre class="code"><span style='color:#004a43; '>#</span><span style='color:#004a43; '>include </span><span style='color:#800000; '>&lt;</span><span style='color:#40015a; '>algorithm</span><span style='color:#800000; '>></span>
+<span style='color:#004a43; '>#</span><span style='color:#004a43; '>include </span><span style='color:#800000; '>&lt;</span><span style='color:#40015a; '>iostream</span><span style='color:#800000; '>></span>
+
+
+<span style='color:#200080; font-weight:bold; '>using</span> <span style='color:#200080; font-weight:bold; '>namespace</span> <span style='color:#0066ee; '>std</span><span style='color:#406080; '>;</span>
+
+
+
+
+
+<span style='color:#595979; '>// types</span>
+<span style='color:#200080; font-weight:bold; '>typedef</span> <span style='color:#200080; font-weight:bold; '>long</span> <span style='color:#200080; font-weight:bold; '>long</span> llong<span style='color:#406080; '>;</span>
+
+
+
+
+
+<span style='color:#595979; '>// main</span>
+<span style='color:#200080; font-weight:bold; '>int</span> <span style='color:#400000; '>main</span><span style='color:#308080; '>(</span> <span style='color:#200080; font-weight:bold; '>int</span> argc<span style='color:#308080; '>,</span> <span style='color:#200080; font-weight:bold; '>char</span> <span style='color:#308080; '>*</span>argv<span style='color:#308080; '>[</span><span style='color:#308080; '>]</span> <span style='color:#308080; '>)</span>
+<span style='color:#406080; '>{</span>
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * массивы всех значений и вероятностей;</span>
+<span style='color:#595979; '>	 * их длинна</span>
+<span style='color:#595979; '>	 */</span>
+	<span style='color:#200080; font-weight:bold; '>int</span> n<span style='color:#406080; '>;</span>
+	<span style='color:#200080; font-weight:bold; '>int</span> <span style='color:#308080; '>*</span>vals<span style='color:#308080; '>,</span> <span style='color:#308080; '>*</span>probs<span style='color:#406080; '>;</span>
+	
+	
+	
+	<span style='color:#595979; '>// input</span>
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * считываем</span>
+<span style='color:#595979; '>	 */</span>
+	<span style='color:#003060; '>scanf</span><span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#007997; '>%i</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span> <span style='color:#308080; '>&amp;</span>n<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+	vals <span style='color:#308080; '>=</span> <span style='color:#200080; font-weight:bold; '>new</span> <span style='color:#200080; font-weight:bold; '>int</span><span style='color:#308080; '>[</span>n<span style='color:#308080; '>]</span><span style='color:#406080; '>;</span>
+	probs <span style='color:#308080; '>=</span> <span style='color:#200080; font-weight:bold; '>new</span> <span style='color:#200080; font-weight:bold; '>int</span><span style='color:#308080; '>[</span>n<span style='color:#308080; '>]</span><span style='color:#406080; '>;</span>
+
+	<span style='color:#200080; font-weight:bold; '>for</span><span style='color:#308080; '>(</span><span style='color:#200080; font-weight:bold; '>auto</span> <span style='color:#308080; '>*</span>b <span style='color:#308080; '>=</span> vals<span style='color:#308080; '>,</span> <span style='color:#308080; '>*</span>e <span style='color:#308080; '>=</span> vals<span style='color:#308080; '>+</span>n<span style='color:#406080; '>;</span> b <span style='color:#308080; '>!</span><span style='color:#308080; '>=</span> e<span style='color:#406080; '>;</span> <span style='color:#308080; '>+</span><span style='color:#308080; '>+</span>b<span style='color:#308080; '>)</span>
+		<span style='color:#003060; '>scanf</span><span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#007997; '>%i</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span> b<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+
+	<span style='color:#200080; font-weight:bold; '>for</span><span style='color:#308080; '>(</span><span style='color:#200080; font-weight:bold; '>auto</span> <span style='color:#308080; '>*</span>b <span style='color:#308080; '>=</span> probs<span style='color:#308080; '>,</span> <span style='color:#308080; '>*</span>e <span style='color:#308080; '>=</span> probs<span style='color:#308080; '>+</span>n<span style='color:#406080; '>;</span> b <span style='color:#308080; '>!</span><span style='color:#308080; '>=</span> e<span style='color:#406080; '>;</span> <span style='color:#308080; '>+</span><span style='color:#308080; '>+</span>b<span style='color:#308080; '>)</span>
+		<span style='color:#003060; '>scanf</span><span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#007997; '>%i</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span> b<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+	
+	
+	
+	<span style='color:#595979; '>// solve</span>
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * сортируем в порядке возрастания, чтобы</span>
+<span style='color:#595979; '>	 * сопоставить меньшие значения с меньшей</span>
+<span style='color:#595979; '>	 * вероятностью выпадения и соответственно</span>
+<span style='color:#595979; '>	 * большие значения сопоставить с большей</span>
+<span style='color:#595979; '>	 * вероятностью выпадения</span>
+<span style='color:#595979; '>	 */</span>
+	<span style='color:#003060; '>sort</span><span style='color:#308080; '>(</span>vals<span style='color:#308080; '>,</span> vals<span style='color:#308080; '>+</span>n<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+	<span style='color:#003060; '>sort</span><span style='color:#308080; '>(</span>probs<span style='color:#308080; '>,</span> probs<span style='color:#308080; '>+</span>n<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * будем одновременно находить и сумму</span>
+<span style='color:#595979; '>	 * произведений и сумму всех вероятностей;</span>
+<span style='color:#595979; '>	 * заметим, что эти суммы помещаются в </span>
+<span style='color:#595979; '>	 * long long</span>
+<span style='color:#595979; '>	 */</span>
+	llong sum <span style='color:#308080; '>=</span> <span style='color:#008c00; '>0</span><span style='color:#406080; '>;</span>
+	llong probssum <span style='color:#308080; '>=</span> <span style='color:#008c00; '>0</span><span style='color:#406080; '>;</span>
+	<span style='color:#200080; font-weight:bold; '>for</span><span style='color:#308080; '>(</span><span style='color:#200080; font-weight:bold; '>int</span> i <span style='color:#308080; '>=</span> <span style='color:#008c00; '>0</span><span style='color:#406080; '>;</span> i <span style='color:#308080; '>&lt;</span> n<span style='color:#406080; '>;</span> <span style='color:#308080; '>+</span><span style='color:#308080; '>+</span>i<span style='color:#308080; '>)</span>
+		sum <span style='color:#308080; '>+</span><span style='color:#308080; '>=</span> <span style='color:#308080; '>(</span>llong<span style='color:#308080; '>)</span>vals<span style='color:#308080; '>[</span>i<span style='color:#308080; '>]</span><span style='color:#308080; '>*</span>probs<span style='color:#308080; '>[</span>i<span style='color:#308080; '>]</span><span style='color:#308080; '>,</span>
+		probssum <span style='color:#308080; '>+</span><span style='color:#308080; '>=</span> probs<span style='color:#308080; '>[</span>i<span style='color:#308080; '>]</span><span style='color:#406080; '>;</span>
+
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * не забываем перести в double, т.к.</span>
+<span style='color:#595979; '>	 * число скорее всего получится дробным, а</span>
+<span style='color:#595979; '>	 * нам нужна точность до шестого знака;</span>
+<span style='color:#595979; '>	 */</span>
+	<span style='color:#200080; font-weight:bold; '>double</span> res <span style='color:#308080; '>=</span> <span style='color:#308080; '>(</span><span style='color:#200080; font-weight:bold; '>double</span><span style='color:#308080; '>)</span>sum<span style='color:#308080; '>/</span><span style='color:#308080; '>(</span><span style='color:#200080; font-weight:bold; '>double</span><span style='color:#308080; '>)</span>probssum<span style='color:#406080; '>;</span>
+	
+	
+	
+	<span style='color:#595979; '>// output</span>
+	<span style='color:#003060; '>printf</span><span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#007997; '>%.7f</span><span style='color:#0f69ff; '>\n</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span> res<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+
+
+
+	<span style='color:#200080; font-weight:bold; '>return</span> <span style='color:#008c00; '>0</span><span style='color:#406080; '>;</span>
+<span style='color:#406080; '>}</span>
+
+
+
+
+
+<span style='color:#595979; '>// end</span>
+</pre>
+<!--Created using ToHtml.com on 2019-10-29 06:32:19 UTC -->
+			</p>
+			<h4> Ссылки </h4>
+			<div class="cutrefs">
+				<a href="http://mai2019.contest.codeforces.com/group/xp6oriuCgA/contest/257479/problem/K"> Задача </a>
+				<a href="https://www.youtube.com/watch?v=WYia2eho0xs&list=PLwlqZIZErd13z5iUWhUKVAZx3-BkmV9rh"> Лекция </a>
+				<a href="https://www.youtube.com/watch?v=Sm0RpE1VaZc"> Разбор задач Журавлёвым </a>
+			</div>
+		</main>
+	</body>
+
+</html>

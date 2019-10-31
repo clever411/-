@@ -1,0 +1,152 @@
+
+/* main */
+body {
+	background: #98bae0;
+	margin: 0;
+	padding: 0;
+}
+
+
+main {
+	width: 900px;
+	min-height: 300px;
+	margin: auto;
+	margin-top: 30px;
+	margin-bottom: 300px;
+	padding: 100px;
+
+	background: #d6dfff;
+	box-shadow: outset 2px 2px 5px black;
+
+	font-size: 1.25em;
+	font-family: "courier new";
+}
+
+
+
+
+
+/* navigation */
+#thehead {
+	display: block;
+	margin-top: 30px;
+	margin-bottom: 30px;
+	text-decoration: none;
+	text-align: center;
+	font-weight: bold;
+	font-size: 3em;
+	color: black;
+}
+
+#thehead:hover {
+	color: #0000aa;
+}
+
+
+nav {
+	display: flex;
+	flex-direction: row;
+}
+
+nav a {
+	font-weight: bold;
+	font-size: 1.25em;
+	text-decoration: none;
+	color: black;
+}
+
+
+#navcol1 {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+}
+
+
+#navcol2 {
+	display: flex;
+	flex-direction: column;
+}
+
+
+
+
+
+/* text */
+h1 {
+	padding-top: 60px;
+	border-bottom: 2px solid gray;
+}
+
+h2 {
+	margin-top: 50px;
+	border-bottom: 1px solid gray;
+}
+
+
+h3 {
+	margin-top: 80px;
+	margin-bottom: 20px;
+	border-bottom: 1px solid gray;
+}
+
+
+h4 {
+	margin-top: 40px;
+	font-weight: bold;
+	font-size: 1em;
+}
+
+
+
+
+
+/* references */
+a:hover {
+	color: #0000aa;
+}
+
+
+.cutrefs a {
+	display: block;
+	text-decoration: none;
+	color: black;
+}
+
+.cutrefs a:hover {
+	color: #0000cc;
+}
+
+
+
+.code {
+	font-size: 0.85em;
+	font-family: "courier new";
+	padding: 25px;
+	background: #e6ebff;
+	border: 2px solid grey;
+}
+
+
+
+.refslist {
+	display: block;
+}
+
+.refslist a {
+	display: block;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 1.1em;
+	color: black;
+}
+
+.refslist a:hover {
+	color: #0000aa;
+}
+
+
+
+
+
+/* end */

@@ -1,0 +1,174 @@
+<!doctype html>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</script>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="../styles.css">
+	</head>
+
+	<body>
+		<main>
+			<a id='thehead' href="../index.html"> ОЛП МАИ </a>
+			<h2> ОЛП МАИ 2019-2020, 1-ый курс. Соревнование 5 </h1>
+			<nav>
+				<div id="navcol1">
+					<a href="F.html"> F: Подсчёт анаграмм </a>
+					<a href="G.html"> G: Геометрическая прогрессия </a>
+				</div>
+				<div id="navcol2">
+					<a href="I.html"> I: Странные кости </a>
+					<a href="K.html"> K: Подготовка </a>
+				</div>
+			</nav>	
+			<h3> Задача I: Странные кости </h2>
+			<h4> ОБЩАЯ ИДЕЯ </h4>
+			<p>
+				Необходимо найти веройтность того, что сумма значений,
+				выпавших на костях, будет попадать в заданный отрезок,
+				т.е. надо найти отношение количества благоприятных исходов
+				(когда попадает в отрезок) к количеству всех возможных исходов.
+				Задача разделяется на две: во-первых, найти кол-во благопритяных
+				исходов; во-вторых, всех.
+			</p>
+			<p>
+				Начнём со второго, потому что это легче. На одном кубике может
+				выпасть \(m\) значений, на другом — \(n\); значит, всего комбинаций
+				разных граней (необязательно значений на них, они могут и повторяться)
+				будет \(m*n\) штук. Нашли. Заметим, что это произведение помещается
+				в long long.
+			</p>
+			<p>
+				С первым чуть посложнее. Если на первой кости у нас выпало значение
+				\(a\), то на второй, чтобы этот исход считался благоприятным, должно
+				выпасть от \(l-a\) до \(r-a\) (включительно); если мы будем брать каждое
+				возможное значение первой кости и сопоставлять с каждым значением 
+				второй, то времени у нас не хватит (придётся сопоставить целых \(10^{10}\)
+				значений). Но если мы отсотрируем все возможные значения второй кости,
+				нам останется только найти первый и последний элементы, которые входят
+				в отрезок, и на основе их номеров вычислить, сколько всего элементов из
+				значений второй кости входят в данный отрезок, и таким образом узнать
+				кол-во благоприятных исходов для значения из первой кости. Так как в
+				отсортированном массиве поиск элемента имеет логарифмическую сложность,
+				то даже если мы будет брать каждое значение первой кости и искать для
+				него значения второй, мы уложимся в сложность \(nlog_2n\), что для
+				данной задачи удовлетворительно.
+			</p>
+			<h4> КОД </h4>
+			<p>
+<pre class="code"><span style='color:#004a43; '>#</span><span style='color:#004a43; '>include </span><span style='color:#800000; '>&lt;</span><span style='color:#40015a; '>algorithm</span><span style='color:#800000; '>></span>
+<span style='color:#004a43; '>#</span><span style='color:#004a43; '>include </span><span style='color:#800000; '>&lt;</span><span style='color:#40015a; '>iostream</span><span style='color:#800000; '>></span>
+
+
+<span style='color:#200080; font-weight:bold; '>using</span> <span style='color:#200080; font-weight:bold; '>namespace</span> <span style='color:#0066ee; '>std</span><span style='color:#406080; '>;</span>
+
+
+
+
+
+<span style='color:#595979; '>// main</span>
+<span style='color:#200080; font-weight:bold; '>int</span> <span style='color:#400000; '>main</span><span style='color:#308080; '>(</span> <span style='color:#200080; font-weight:bold; '>int</span> argc<span style='color:#308080; '>,</span> <span style='color:#200080; font-weight:bold; '>char</span> <span style='color:#308080; '>*</span>argv<span style='color:#308080; '>[</span><span style='color:#308080; '>]</span> <span style='color:#308080; '>)</span>
+<span style='color:#406080; '>{</span>
+	<span style='color:#200080; font-weight:bold; '>typedef</span> <span style='color:#200080; font-weight:bold; '>long</span> <span style='color:#200080; font-weight:bold; '>long</span> llong<span style='color:#406080; '>;</span>
+
+	<span style='color:#200080; font-weight:bold; '>int</span> m<span style='color:#308080; '>,</span> n<span style='color:#406080; '>;</span>
+	<span style='color:#200080; font-weight:bold; '>int</span> <span style='color:#308080; '>*</span>a<span style='color:#308080; '>,</span> <span style='color:#308080; '>*</span>b<span style='color:#406080; '>;</span>
+	<span style='color:#200080; font-weight:bold; '>int</span> l<span style='color:#308080; '>,</span> r<span style='color:#406080; '>;</span>
+	
+	
+	
+	<span style='color:#595979; '>// input</span>
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * считываем значения первой и второй кости, а также</span>
+<span style='color:#595979; '>	 * отрезок, в который сумма значений должна попасть</span>
+<span style='color:#595979; '>	 */</span>
+	<span style='color:#003060; '>scanf</span><span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#007997; '>%i</span><span style='color:#007997; '>%i</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span> <span style='color:#308080; '>&amp;</span>m<span style='color:#308080; '>,</span> <span style='color:#308080; '>&amp;</span>n<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+	a <span style='color:#308080; '>=</span> <span style='color:#200080; font-weight:bold; '>new</span> <span style='color:#200080; font-weight:bold; '>int</span><span style='color:#308080; '>[</span>m<span style='color:#308080; '>]</span><span style='color:#406080; '>;</span>
+	b <span style='color:#308080; '>=</span> <span style='color:#200080; font-weight:bold; '>new</span> <span style='color:#200080; font-weight:bold; '>int</span><span style='color:#308080; '>[</span>n<span style='color:#308080; '>]</span><span style='color:#406080; '>;</span>
+	<span style='color:#200080; font-weight:bold; '>for</span><span style='color:#308080; '>(</span><span style='color:#200080; font-weight:bold; '>int</span> i <span style='color:#308080; '>=</span> <span style='color:#008c00; '>0</span><span style='color:#406080; '>;</span> i <span style='color:#308080; '>&lt;</span> m<span style='color:#406080; '>;</span> <span style='color:#308080; '>+</span><span style='color:#308080; '>+</span>i<span style='color:#308080; '>)</span>
+		<span style='color:#003060; '>scanf</span><span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#007997; '>%i</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span> a<span style='color:#308080; '>+</span>i<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+	<span style='color:#200080; font-weight:bold; '>for</span><span style='color:#308080; '>(</span><span style='color:#200080; font-weight:bold; '>int</span> i <span style='color:#308080; '>=</span> <span style='color:#008c00; '>0</span><span style='color:#406080; '>;</span> i <span style='color:#308080; '>&lt;</span> n<span style='color:#406080; '>;</span> <span style='color:#308080; '>+</span><span style='color:#308080; '>+</span>i<span style='color:#308080; '>)</span>
+		<span style='color:#003060; '>scanf</span><span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#007997; '>%i</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span> b<span style='color:#308080; '>+</span>i<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+	<span style='color:#003060; '>scanf</span><span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#007997; '>%i</span><span style='color:#007997; '>%i</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span> <span style='color:#308080; '>&amp;</span>l<span style='color:#308080; '>,</span> <span style='color:#308080; '>&amp;</span>r<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+
+
+
+	<span style='color:#595979; '>// prepare</span>
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * будем сортировать наибольший массив, чтобы сэкономить</span>
+<span style='color:#595979; '>	 * время на линейном прохождении по оставшемуся, меньшему</span>
+<span style='color:#595979; '>	 * массиву</span>
+<span style='color:#595979; '>	 */</span>
+	<span style='color:#200080; font-weight:bold; '>if</span><span style='color:#308080; '>(</span>n <span style='color:#308080; '>&lt;</span> m<span style='color:#308080; '>)</span>
+		<span style='color:#003060; '>swap</span><span style='color:#308080; '>(</span>m<span style='color:#308080; '>,</span> n<span style='color:#308080; '>)</span><span style='color:#308080; '>,</span>
+		<span style='color:#003060; '>swap</span><span style='color:#308080; '>(</span>a<span style='color:#308080; '>,</span> b<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+	<span style='color:#003060; '>sort</span><span style='color:#308080; '>(</span>b<span style='color:#308080; '>,</span> b<span style='color:#308080; '>+</span>n<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+	
+	
+	
+	<span style='color:#595979; '>// solve</span>
+	<span style='color:#595979; '>// количество благопритяных исходов</span>
+	llong good <span style='color:#308080; '>=</span> <span style='color:#008c00; '>0</span><span style='color:#406080; '>;</span>
+	<span style='color:#406080; '>{</span>
+		<span style='color:#200080; font-weight:bold; '>int</span> <span style='color:#308080; '>*</span>lower<span style='color:#308080; '>,</span> <span style='color:#308080; '>*</span>upper<span style='color:#406080; '>;</span>
+		<span style='color:#200080; font-weight:bold; '>for</span><span style='color:#308080; '>(</span><span style='color:#200080; font-weight:bold; '>int</span> i <span style='color:#308080; '>=</span> <span style='color:#008c00; '>0</span><span style='color:#406080; '>;</span> i <span style='color:#308080; '>&lt;</span> m<span style='color:#406080; '>;</span> <span style='color:#308080; '>+</span><span style='color:#308080; '>+</span>i<span style='color:#308080; '>)</span>
+		<span style='color:#406080; '>{</span>
+			<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>			 * напомню, что lower_bound находит первый элемент,</span>
+<span style='color:#595979; '>			 * который больше или равен заданному, а upper_bound</span>
+<span style='color:#595979; '>			 * находит первый элемент, который строго больше</span>
+<span style='color:#595979; '>			 * заданного (если таковых нет, возвращается ссылка</span>
+<span style='color:#595979; '>			 * на элемент за концом заданного промежутка); таким</span>
+<span style='color:#595979; '>			 * образом мы находит полуинтервал [lower, upper),</span>
+<span style='color:#595979; '>			 * где lower указывает на первый входящий в отрезок</span>
+<span style='color:#595979; '>			 * [l, r] элемент, а upper - на первый элемент,</span>
+<span style='color:#595979; '>			 * который находится за (или равен) lower и не входит</span>
+<span style='color:#595979; '>			 * в отрезок [l, r]. Чтобы вычислить кол-во элементов</span>
+<span style='color:#595979; '>			 * в полуинтервале, достаточно вычесть начало из конца</span>
+<span style='color:#595979; '>			 */</span>
+			lower <span style='color:#308080; '>=</span> <span style='color:#003060; '>lower_bound</span><span style='color:#308080; '>(</span>b<span style='color:#308080; '>,</span> b<span style='color:#308080; '>+</span>n<span style='color:#308080; '>,</span> l<span style='color:#308080; '>-</span>a<span style='color:#308080; '>[</span>i<span style='color:#308080; '>]</span><span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+			upper <span style='color:#308080; '>=</span> <span style='color:#003060; '>upper_bound</span><span style='color:#308080; '>(</span>b<span style='color:#308080; '>,</span> b<span style='color:#308080; '>+</span>n<span style='color:#308080; '>,</span> r<span style='color:#308080; '>-</span>a<span style='color:#308080; '>[</span>i<span style='color:#308080; '>]</span><span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+			good <span style='color:#308080; '>+</span><span style='color:#308080; '>=</span> upper <span style='color:#308080; '>-</span> lower<span style='color:#406080; '>;</span>
+		<span style='color:#406080; '>}</span>
+	<span style='color:#406080; '>}</span>
+
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * необходимо не забыть перевсти в double, иначе произойдёт</span>
+<span style='color:#595979; '>	 * целочисленное деление и резльтат будет равен нулю</span>
+<span style='color:#595979; '>	 */</span>
+	<span style='color:#200080; font-weight:bold; '>double</span> <span style='color:#200080; font-weight:bold; '>const</span> res <span style='color:#308080; '>=</span> <span style='color:#308080; '>(</span><span style='color:#200080; font-weight:bold; '>double</span><span style='color:#308080; '>)</span>good <span style='color:#308080; '>/</span> <span style='color:#308080; '>(</span><span style='color:#308080; '>(</span>llong<span style='color:#308080; '>)</span>n<span style='color:#308080; '>*</span>m<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+	
+	
+	
+	<span style='color:#595979; '>// output</span>
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * вывод с точностью до десятого знака</span>
+<span style='color:#595979; '>	 */</span>
+	<span style='color:#003060; '>cout</span><span style='color:#308080; '>.</span>precision<span style='color:#308080; '>(</span><span style='color:#008c00; '>10</span><span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+	<span style='color:#003060; '>cout</span> <span style='color:#308080; '>&lt;</span><span style='color:#308080; '>&lt;</span> res <span style='color:#308080; '>&lt;</span><span style='color:#308080; '>&lt;</span> <span style='color:#003060; '>endl</span><span style='color:#406080; '>;</span>
+
+
+
+	<span style='color:#200080; font-weight:bold; '>return</span> <span style='color:#008c00; '>0</span><span style='color:#406080; '>;</span>
+<span style='color:#406080; '>}</span>
+
+
+
+
+
+<span style='color:#595979; '>// end</span>
+</pre>
+<!--Created using ToHtml.com on 2019-10-29 07:14:55 UTC -->
+			</p>
+			<h4> Ссылки </h4>
+			<div class="cutrefs">
+				<a href="http://mai2019.contest.codeforces.com/group/xp6oriuCgA/contest/257479/problem/I"> Задача </a>
+				<a href="https://www.youtube.com/watch?v=WYia2eho0xs&list=PLwlqZIZErd13z5iUWhUKVAZx3-BkmV9rh"> Лекция </a>
+				<a href="https://www.youtube.com/watch?v=Sm0RpE1VaZc"> Разбор задач Журавлёвым </a>
+			</div>
+		</main>
+	</body>
+
+</html>
