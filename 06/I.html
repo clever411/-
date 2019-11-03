@@ -1,0 +1,238 @@
+<!doctype html>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</script>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="../styles.css">
+	</head>
+
+	<body>
+		<main>
+			<a id='thehead' href="../index.html"> ОЛП МАИ </a>
+			<h2> ОЛП МАИ 2019-2020, 1-ый курс. Соревнование 6 </h1>
+			<nav>
+				<div id="navcol1">
+					<a href="F.html"> F: Черепашка и опасности </a>
+				</div>
+				<div id="navcol2">
+					<a href="I.html"> I: Космические бои </a>
+				</div>
+			</nav>	
+			<h3> Задача I: Космические бои </h2>
+			<h4> ОБЩАЯ ИДЕЯ </h4>
+			<p>
+				Нам дано \(n\) отрезков, каждый из которых мы можем проходить
+				либо из начала в конец, либо из конца в начало — притом задан
+				порядок отрезков (сначала мы должны пройти первый отрезок,
+				затем второй). Нам нужно пройти все эти отрезки так, чтобы
+				расстояние пройденного пути было наименьшим; при прохождении
+				каждого отрезка мы делаем лишь один выбор: с какой стороны
+				его пройти. Можно выделить состояние между
+				прохождением отрезков, которое состоит из расстояния, уже
+				пройденного и точки, в которой остановился лазер. Исходя из
+				этого состояния, мы можем принимать решение о том, как
+				пройти следующий отрезок.
+			</p>
+			<p>
+				Задача довольно запутанная, поэтому словами объяснять сложно;
+				надеюсь код будет яснее. Чтобы лучше понять задачу, советую
+				нарисовать отрезки и траекторию движения лазера при выборе
+				разных вариантов состояний.
+			</p>
+			<h4> КОД </h4>
+			<p>
+<pre class='code'><span style='color:#004a43; '>#</span><span style='color:#004a43; '>include </span><span style='color:#800000; '>&lt;</span><span style='color:#40015a; '>cmath</span><span style='color:#800000; '>></span>
+<span style='color:#004a43; '>#</span><span style='color:#004a43; '>include </span><span style='color:#800000; '>&lt;</span><span style='color:#40015a; '>iostream</span><span style='color:#800000; '>></span>
+
+
+<span style='color:#200080; font-weight:bold; '>using</span> <span style='color:#200080; font-weight:bold; '>namespace</span> <span style='color:#0066ee; '>std</span><span style='color:#406080; '>;</span>
+
+
+
+
+
+<span style='color:#595979; '>// function</span>
+<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>&#xa0;* функция, которая находит расстояние между</span>
+<span style='color:#595979; '>&#xa0;* двумя точками в целочисленных координатах</span>
+<span style='color:#595979; '>&#xa0;*/</span>
+<span style='color:#200080; font-weight:bold; '>double</span> distance<span style='color:#308080; '>(</span><span style='color:#200080; font-weight:bold; '>int</span> x<span style='color:#308080; '>,</span> <span style='color:#200080; font-weight:bold; '>int</span> y<span style='color:#308080; '>,</span> <span style='color:#200080; font-weight:bold; '>int</span> xx<span style='color:#308080; '>,</span> <span style='color:#200080; font-weight:bold; '>int</span> yy<span style='color:#308080; '>)</span>
+<span style='color:#406080; '>{</span>
+	<span style='color:#200080; font-weight:bold; '>return</span> <span style='color:#003060; '>sqrt</span><span style='color:#308080; '>(</span> 
+		<span style='color:#308080; '>(</span>xx<span style='color:#308080; '>-</span>x<span style='color:#308080; '>)</span><span style='color:#308080; '>*</span><span style='color:#308080; '>(</span>xx<span style='color:#308080; '>-</span>x<span style='color:#308080; '>)</span> <span style='color:#308080; '>+</span>
+		<span style='color:#308080; '>(</span>yy<span style='color:#308080; '>-</span>y<span style='color:#308080; '>)</span><span style='color:#308080; '>*</span><span style='color:#308080; '>(</span>yy<span style='color:#308080; '>-</span>y<span style='color:#308080; '>)</span>
+	<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+<span style='color:#406080; '>}</span>
+
+
+
+
+
+<span style='color:#595979; '>// main</span>
+<span style='color:#200080; font-weight:bold; '>int</span> <span style='color:#400000; '>main</span><span style='color:#308080; '>(</span> <span style='color:#200080; font-weight:bold; '>int</span> argc<span style='color:#308080; '>,</span> <span style='color:#200080; font-weight:bold; '>char</span> <span style='color:#308080; '>*</span>argv<span style='color:#308080; '>[</span><span style='color:#308080; '>]</span> <span style='color:#308080; '>)</span>
+<span style='color:#406080; '>{</span>
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * стуктура состояния, которая</span>
+<span style='color:#595979; '>	 * содержит уже пройденное расстояние</span>
+<span style='color:#595979; '>	 * и точку, в которой находится лазер</span>
+<span style='color:#595979; '>	 */</span>
+	<span style='color:#200080; font-weight:bold; '>typedef</span> <span style='color:#200080; font-weight:bold; '>struct</span>
+	<span style='color:#406080; '>{</span>
+		<span style='color:#200080; font-weight:bold; '>double</span> dis<span style='color:#406080; '>;</span>
+		<span style='color:#200080; font-weight:bold; '>int</span> x<span style='color:#308080; '>,</span> y<span style='color:#406080; '>;</span>
+	<span style='color:#406080; '>}</span> Stage<span style='color:#406080; '>;</span>
+
+
+	<span style='color:#200080; font-weight:bold; '>int</span> n<span style='color:#406080; '>;</span>
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * состояния: первое, в котором лазер</span>
+<span style='color:#595979; '>	 * проходит из начала в конец отрезка и</span>
+<span style='color:#595979; '>	 * останавливается в точке конца отрезка;</span>
+<span style='color:#595979; '>	 * второе, в котором лазер проходит из</span>
+<span style='color:#595979; '>	 * конца в начало и останавливается в</span>
+<span style='color:#595979; '>	 * начале отрезка; и третье — временное,</span>
+<span style='color:#595979; '>	 * чтобы сохранить промежуточный вариант</span>
+<span style='color:#595979; '>	 * между вычислениями состояний текущего</span>
+<span style='color:#595979; '>	 * шага и следующего</span>
+<span style='color:#595979; '>	 */</span>
+	Stage fst<span style='color:#308080; '>,</span> sst<span style='color:#308080; '>,</span> tempst<span style='color:#406080; '>;</span>
+	<span style='color:#200080; font-weight:bold; '>int</span> x<span style='color:#308080; '>,</span> y<span style='color:#308080; '>,</span> xx<span style='color:#308080; '>,</span> yy<span style='color:#406080; '>;</span>
+	
+	
+
+
+
+	<span style='color:#595979; '>// input</span>
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * считываем кол-во отрезков</span>
+<span style='color:#595979; '>	 */</span>
+	<span style='color:#003060; '>scanf</span><span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#007997; '>%i</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span> <span style='color:#308080; '>&amp;</span>n<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+
+
+
+		<span style='color:#595979; '>// first case</span>
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * считываем первый отрезок (он всегда есть),</span>
+<span style='color:#595979; '>	 * устанавливаем состояния</span>
+<span style='color:#595979; '>	 */</span>
+	<span style='color:#003060; '>scanf</span><span style='color:#308080; '>(</span>
+		<span style='color:#800000; '>"</span><span style='color:#007997; '>%i</span><span style='color:#007997; '>%i</span><span style='color:#007997; '>%i</span><span style='color:#007997; '>%i</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span>
+		<span style='color:#308080; '>&amp;</span>x<span style='color:#308080; '>,</span> <span style='color:#308080; '>&amp;</span>y<span style='color:#308080; '>,</span> <span style='color:#308080; '>&amp;</span>xx<span style='color:#308080; '>,</span> <span style='color:#308080; '>&amp;</span>yy
+	<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+	fst<span style='color:#308080; '>.</span>dis <span style='color:#308080; '>=</span> sst<span style='color:#308080; '>.</span>dis <span style='color:#308080; '>=</span> distance<span style='color:#308080; '>(</span>x<span style='color:#308080; '>,</span> y<span style='color:#308080; '>,</span> xx<span style='color:#308080; '>,</span> yy<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * координаты на конце</span>
+<span style='color:#595979; '>	 */</span>
+	fst<span style='color:#308080; '>.</span>x <span style='color:#308080; '>=</span> xx<span style='color:#308080; '>,</span> fst<span style='color:#308080; '>.</span>y <span style='color:#308080; '>=</span> yy<span style='color:#406080; '>;</span>
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * координаты на начале</span>
+<span style='color:#595979; '>	 */</span>
+	sst<span style='color:#308080; '>.</span>x <span style='color:#308080; '>=</span> x<span style='color:#308080; '>,</span> sst<span style='color:#308080; '>.</span>y <span style='color:#308080; '>=</span> y<span style='color:#406080; '>;</span>
+
+
+
+		<span style='color:#595979; '>// other cases</span>
+	<span style='color:#200080; font-weight:bold; '>for</span><span style='color:#308080; '>(</span><span style='color:#200080; font-weight:bold; '>int</span> i <span style='color:#308080; '>=</span> <span style='color:#008c00; '>1</span><span style='color:#406080; '>;</span> i <span style='color:#308080; '>&lt;</span> n<span style='color:#406080; '>;</span> <span style='color:#308080; '>+</span><span style='color:#308080; '>+</span>i<span style='color:#308080; '>)</span>
+	<span style='color:#406080; '>{</span>
+		<span style='color:#003060; '>scanf</span><span style='color:#308080; '>(</span>
+			<span style='color:#800000; '>"</span><span style='color:#007997; '>%i</span><span style='color:#007997; '>%i</span><span style='color:#007997; '>%i</span><span style='color:#007997; '>%i</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span>
+			<span style='color:#308080; '>&amp;</span>x<span style='color:#308080; '>,</span> <span style='color:#308080; '>&amp;</span>y<span style='color:#308080; '>,</span> <span style='color:#308080; '>&amp;</span>xx<span style='color:#308080; '>,</span> <span style='color:#308080; '>&amp;</span>yy
+		<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+
+		<span style='color:#595979; '>// first stage (end is e)</span>
+		<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>		 * сначала попробуем текущий отрезок пройти</span>
+<span style='color:#595979; '>		 * от начала до конца — тогда выберем такое</span>
+<span style='color:#595979; '>		 * предыдущее состояние, чтобы пройденное</span>
+<span style='color:#595979; '>		 * расстояние было наименьшим</span>
+<span style='color:#595979; '>		 */</span>
+		<span style='color:#200080; font-weight:bold; '>if</span><span style='color:#308080; '>(</span>
+			sst<span style='color:#308080; '>.</span>dis <span style='color:#308080; '>+</span> distance<span style='color:#308080; '>(</span>sst<span style='color:#308080; '>.</span>x<span style='color:#308080; '>,</span> sst<span style='color:#308080; '>.</span>y<span style='color:#308080; '>,</span> x<span style='color:#308080; '>,</span> y<span style='color:#308080; '>)</span> <span style='color:#308080; '>&lt;</span>
+			fst<span style='color:#308080; '>.</span>dis <span style='color:#308080; '>+</span> distance<span style='color:#308080; '>(</span>fst<span style='color:#308080; '>.</span>x<span style='color:#308080; '>,</span> fst<span style='color:#308080; '>.</span>y<span style='color:#308080; '>,</span> x<span style='color:#308080; '>,</span> y<span style='color:#308080; '>)</span>
+		<span style='color:#308080; '>)</span>
+		<span style='color:#406080; '>{</span>
+			<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>			 * выбираем соответствующий вариант; сохраняем</span>
+<span style='color:#595979; '>			 * во временную переменную, т.к. fst нам ещё</span>
+<span style='color:#595979; '>			 * нужен для вычисления второго состояния</span>
+<span style='color:#595979; '>			 */</span>
+			tempst<span style='color:#308080; '>.</span>dis <span style='color:#308080; '>=</span> sst<span style='color:#308080; '>.</span>dis <span style='color:#308080; '>+</span>
+				distance<span style='color:#308080; '>(</span>sst<span style='color:#308080; '>.</span>x<span style='color:#308080; '>,</span> sst<span style='color:#308080; '>.</span>y<span style='color:#308080; '>,</span> x<span style='color:#308080; '>,</span> y<span style='color:#308080; '>)</span> <span style='color:#308080; '>+</span>
+				distance<span style='color:#308080; '>(</span>x<span style='color:#308080; '>,</span> y<span style='color:#308080; '>,</span> xx<span style='color:#308080; '>,</span> yy<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+			tempst<span style='color:#308080; '>.</span>x <span style='color:#308080; '>=</span> xx<span style='color:#308080; '>,</span> tempst<span style='color:#308080; '>.</span>y <span style='color:#308080; '>=</span> yy<span style='color:#406080; '>;</span>
+		<span style='color:#406080; '>}</span>
+		<span style='color:#200080; font-weight:bold; '>else</span>
+		<span style='color:#406080; '>{</span>
+			tempst<span style='color:#308080; '>.</span>dis <span style='color:#308080; '>=</span> fst<span style='color:#308080; '>.</span>dis <span style='color:#308080; '>+</span>
+				distance<span style='color:#308080; '>(</span>fst<span style='color:#308080; '>.</span>x<span style='color:#308080; '>,</span> fst<span style='color:#308080; '>.</span>y<span style='color:#308080; '>,</span> x<span style='color:#308080; '>,</span> y<span style='color:#308080; '>)</span> <span style='color:#308080; '>+</span>
+				distance<span style='color:#308080; '>(</span>x<span style='color:#308080; '>,</span> y<span style='color:#308080; '>,</span> xx<span style='color:#308080; '>,</span> yy<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+			tempst<span style='color:#308080; '>.</span>x <span style='color:#308080; '>=</span> xx<span style='color:#308080; '>,</span> tempst<span style='color:#308080; '>.</span>y <span style='color:#308080; '>=</span> yy<span style='color:#406080; '>;</span>
+		<span style='color:#406080; '>}</span>
+
+
+
+		<span style='color:#595979; '>// second stage (end is b)</span>
+		<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>		 * второе состояние, когда мы проходим из</span>
+<span style='color:#595979; '>		 * конца в начало; действуем соответственно</span>
+<span style='color:#595979; '>		 */</span>
+		<span style='color:#200080; font-weight:bold; '>if</span><span style='color:#308080; '>(</span>
+			sst<span style='color:#308080; '>.</span>dis <span style='color:#308080; '>+</span> distance<span style='color:#308080; '>(</span>sst<span style='color:#308080; '>.</span>x<span style='color:#308080; '>,</span> sst<span style='color:#308080; '>.</span>y<span style='color:#308080; '>,</span> xx<span style='color:#308080; '>,</span> yy<span style='color:#308080; '>)</span> <span style='color:#308080; '>&lt;</span>
+			fst<span style='color:#308080; '>.</span>dis <span style='color:#308080; '>+</span> distance<span style='color:#308080; '>(</span>fst<span style='color:#308080; '>.</span>x<span style='color:#308080; '>,</span> fst<span style='color:#308080; '>.</span>y<span style='color:#308080; '>,</span> xx<span style='color:#308080; '>,</span> yy<span style='color:#308080; '>)</span>
+		<span style='color:#308080; '>)</span>
+		<span style='color:#406080; '>{</span>
+			sst<span style='color:#308080; '>.</span>dis <span style='color:#308080; '>=</span> sst<span style='color:#308080; '>.</span>dis <span style='color:#308080; '>+</span>
+				distance<span style='color:#308080; '>(</span>sst<span style='color:#308080; '>.</span>x<span style='color:#308080; '>,</span> sst<span style='color:#308080; '>.</span>y<span style='color:#308080; '>,</span> xx<span style='color:#308080; '>,</span> yy<span style='color:#308080; '>)</span> <span style='color:#308080; '>+</span>
+				distance<span style='color:#308080; '>(</span>xx<span style='color:#308080; '>,</span> yy<span style='color:#308080; '>,</span> x<span style='color:#308080; '>,</span> y<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+			sst<span style='color:#308080; '>.</span>x <span style='color:#308080; '>=</span> x<span style='color:#308080; '>,</span> sst<span style='color:#308080; '>.</span>y <span style='color:#308080; '>=</span> y<span style='color:#406080; '>;</span>
+		<span style='color:#406080; '>}</span>
+		<span style='color:#200080; font-weight:bold; '>else</span>
+		<span style='color:#406080; '>{</span>
+			sst<span style='color:#308080; '>.</span>dis <span style='color:#308080; '>=</span> fst<span style='color:#308080; '>.</span>dis <span style='color:#308080; '>+</span>
+				distance<span style='color:#308080; '>(</span>fst<span style='color:#308080; '>.</span>x<span style='color:#308080; '>,</span> fst<span style='color:#308080; '>.</span>y<span style='color:#308080; '>,</span> xx<span style='color:#308080; '>,</span> yy<span style='color:#308080; '>)</span> <span style='color:#308080; '>+</span>
+				distance<span style='color:#308080; '>(</span>xx<span style='color:#308080; '>,</span> yy<span style='color:#308080; '>,</span> x<span style='color:#308080; '>,</span> y<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+			sst<span style='color:#308080; '>.</span>x <span style='color:#308080; '>=</span> x<span style='color:#308080; '>,</span> sst<span style='color:#308080; '>.</span>y <span style='color:#308080; '>=</span> y<span style='color:#406080; '>;</span>
+		<span style='color:#406080; '>}</span>
+
+
+
+		<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>		 * не забываем установить fst </span>
+<span style='color:#595979; '>		 */</span>
+		fst <span style='color:#308080; '>=</span> tempst<span style='color:#406080; '>;</span>
+	<span style='color:#406080; '>}</span>
+	
+	
+	
+	<span style='color:#595979; '>// output</span>
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * выводим наилучший из вариантов</span>
+<span style='color:#595979; '>	 */</span>
+	<span style='color:#003060; '>printf</span><span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#007997; '>%.7f</span><span style='color:#0f69ff; '>\n</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span> <span style='color:#003060; '>min</span><span style='color:#308080; '>(</span>fst<span style='color:#308080; '>.</span>dis<span style='color:#308080; '>,</span> sst<span style='color:#308080; '>.</span>dis<span style='color:#308080; '>)</span><span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+
+
+
+	<span style='color:#200080; font-weight:bold; '>return</span> <span style='color:#008c00; '>0</span><span style='color:#406080; '>;</span>
+<span style='color:#406080; '>}</span>
+
+
+
+
+
+<span style='color:#595979; '>// end</span>
+</pre>
+<!--Created using ToHtml.com on 2019-11-03 08:20:18 UTC -->
+			</p>
+			<h4> Ссылки </h4>
+			<div class="cutrefs">
+				<a href="https://mai2019.contest.codeforces.com/group/xp6oriuCgA/contest/258314/problem/I"> Задача </a>
+				<a href="https://www.youtube.com/watch?time_continue=1&v=ge_t_NAHayw"> Лекция </a>
+				<a href="https://www.youtube.com/watch?v=xcnTeHimB60"> Разбор задач Журавлёвым </a>
+			</div>
+		</main>
+	</body>
+
+</html>

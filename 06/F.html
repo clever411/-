@@ -1,0 +1,168 @@
+<!doctype html>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</script>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="../styles.css">
+	</head>
+
+	<body>
+		<main>
+			<a id='thehead' href="../index.html"> ОЛП МАИ </a>
+			<h2> ОЛП МАИ 2019-2020, 1-ый курс. Соревнование 6 </h1>
+			<nav>
+				<div id="navcol1">
+					<a href="F.html"> F: Черепашка и опасности </a>
+				</div>
+				<div id="navcol2">
+					<a href="I.html"> I: Космические бои </a>
+				</div>
+			</nav>	
+			<h3> Задача F: черепашка и опасности </h2>
+			<h4> ОБЩАЯ ИДЕЯ </h4>
+			<p>
+				Действовать мы будем схоже с задачей С за исключением того,
+				что у нас будет не одномерная прямая, а двумерная плоскость.
+				Заметим, что в каждую клетку мы можем пройти либо из той,
+				что сверху, либо из той, что слева — лишь два варианта
+				попасть в клетку; однако и до тех клеткок, из которых мы попадаем
+				в текущую, мы могли добраться несколькими способами — поэтому,
+				чтобы узнать сколькими вариантами можно добраться в текущую
+				клетку, мы должны сложить то, сколькими способами мы
+				могли бы добраться до клетки сверху и клетки слева. Также
+				на поле присутствуют так называемые опасные клетки, в которые
+				мы не должны вступать; с ними мы поступаем просто: считаем,
+				что до них невозможно добраться, и таким образом, когда
+				будем находиться в клетках, для которых опасная находится
+				сверху или слева, прибавлять будем ноль.
+			</p>
+			<h4> КОД </h4>
+			<p>
+<pre class='code'><span style='color:#004a43; '>#</span><span style='color:#004a43; '>include </span><span style='color:#800000; '>&lt;</span><span style='color:#40015a; '>iostream</span><span style='color:#800000; '>></span>
+<span style='color:#004a43; '>#</span><span style='color:#004a43; '>include </span><span style='color:#800000; '>&lt;</span><span style='color:#40015a; '>vector</span><span style='color:#800000; '>></span>
+
+
+<span style='color:#595979; '>// макрос, который берёт модуль</span>
+
+<span style='color:#004a43; '>#</span><span style='color:#004a43; '>define</span><span style='color:#004a43; '> MOD</span><span style='color:#308080; '>(</span><span style='color:#004a43; '>x</span><span style='color:#308080; '>)</span><span style='color:#004a43; '> </span><span style='color:#308080; '>(</span><span style='color:#004a43; '> </span><span style='color:#308080; '>(</span><span style='color:#004a43; '>x</span><span style='color:#308080; '>)</span><span style='color:#004a43; '> </span><span style='color:#308080; '>%</span><span style='color:#004a43; '> 1000000007 </span><span style='color:#308080; '>)</span>
+
+
+<span style='color:#200080; font-weight:bold; '>using</span> <span style='color:#200080; font-weight:bold; '>namespace</span> <span style='color:#0066ee; '>std</span><span style='color:#406080; '>;</span>
+
+
+
+
+
+<span style='color:#595979; '>// main</span>
+<span style='color:#200080; font-weight:bold; '>int</span> <span style='color:#400000; '>main</span><span style='color:#308080; '>(</span> <span style='color:#200080; font-weight:bold; '>int</span> argc<span style='color:#308080; '>,</span> <span style='color:#200080; font-weight:bold; '>char</span> <span style='color:#308080; '>*</span>argv<span style='color:#308080; '>[</span><span style='color:#308080; '>]</span> <span style='color:#308080; '>)</span>
+<span style='color:#406080; '>{</span>
+	<span style='color:#200080; font-weight:bold; '>typedef</span> <span style='color:#200080; font-weight:bold; '>long</span> <span style='color:#200080; font-weight:bold; '>long</span> llong<span style='color:#406080; '>;</span>
+
+	<span style='color:#595979; '>// размеры нашего поля</span>
+	<span style='color:#200080; font-weight:bold; '>int</span> n<span style='color:#308080; '>,</span> m<span style='color:#406080; '>;</span>
+	<span style='color:#595979; '>// кол-во опасностей</span>
+	<span style='color:#200080; font-weight:bold; '>int</span> dang<span style='color:#406080; '>;</span>
+	
+	
+	
+	<span style='color:#595979; '>// input</span>
+	<span style='color:#003060; '>scanf</span><span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#007997; '>%i</span><span style='color:#007997; '>%i</span><span style='color:#007997; '>%i</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span> <span style='color:#308080; '>&amp;</span>n<span style='color:#308080; '>,</span> <span style='color:#308080; '>&amp;</span>m<span style='color:#308080; '>,</span> <span style='color:#308080; '>&amp;</span>dang<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * так как поле должно включать клетку</span>
+<span style='color:#595979; '>	 * с координатами n m</span>
+<span style='color:#595979; '>	 */</span>
+	<span style='color:#308080; '>+</span><span style='color:#308080; '>+</span>n<span style='color:#308080; '>,</span> <span style='color:#308080; '>+</span><span style='color:#308080; '>+</span>m<span style='color:#406080; '>;</span>
+	<span style='color:#595979; '>// наше поле</span>
+	<span style='color:#003060; '>vector</span><span style='color:#406080; '>&lt;</span> <span style='color:#003060; '>vector</span><span style='color:#406080; '>&lt;</span>llong<span style='color:#406080; '>></span> <span style='color:#406080; '>></span> f<span style='color:#308080; '>(</span>n<span style='color:#308080; '>,</span> <span style='color:#003060; '>vector</span><span style='color:#406080; '>&lt;</span>llong<span style='color:#406080; '>></span><span style='color:#308080; '>(</span>m<span style='color:#308080; '>,</span> <span style='color:#008c00; '>0</span><span style='color:#308080; '>)</span><span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+
+	<span style='color:#595979; '>// помечаем опасные клетки</span>
+	<span style='color:#200080; font-weight:bold; '>for</span><span style='color:#308080; '>(</span><span style='color:#200080; font-weight:bold; '>int</span> i <span style='color:#308080; '>=</span> <span style='color:#008c00; '>0</span><span style='color:#308080; '>,</span> x<span style='color:#308080; '>,</span> y<span style='color:#406080; '>;</span> i <span style='color:#308080; '>&lt;</span> dang<span style='color:#406080; '>;</span> <span style='color:#308080; '>+</span><span style='color:#308080; '>+</span>i<span style='color:#308080; '>)</span>
+		<span style='color:#003060; '>scanf</span><span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#007997; '>%i</span><span style='color:#007997; '>%i</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span> <span style='color:#308080; '>&amp;</span>x<span style='color:#308080; '>,</span> <span style='color:#308080; '>&amp;</span>y<span style='color:#308080; '>)</span><span style='color:#308080; '>,</span>
+		f<span style='color:#308080; '>[</span>y<span style='color:#308080; '>]</span><span style='color:#308080; '>[</span>x<span style='color:#308080; '>]</span> <span style='color:#308080; '>=</span> <span style='color:#308080; '>-</span><span style='color:#008c00; '>1</span><span style='color:#406080; '>;</span>
+	
+	
+	
+	<span style='color:#595979; '>// solve</span>
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * в самую первую клетку мы можем</span>
+<span style='color:#595979; '>	 * добраться единственным способом:</span>
+<span style='color:#595979; '>	 * стоять</span>
+<span style='color:#595979; '>	 */</span>
+	f<span style='color:#308080; '>[</span><span style='color:#008c00; '>0</span><span style='color:#308080; '>]</span><span style='color:#308080; '>[</span><span style='color:#008c00; '>0</span><span style='color:#308080; '>]</span> <span style='color:#308080; '>=</span> <span style='color:#008c00; '>1</span><span style='color:#406080; '>;</span>
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * проходимся по всем клеткам:</span>
+<span style='color:#595979; '>	 * сначала первая строка и в ней</span>
+<span style='color:#595979; '>	 * каждая клетка, затем следующая</span>
+<span style='color:#595979; '>	 * строка</span>
+<span style='color:#595979; '>	 */</span>
+	<span style='color:#200080; font-weight:bold; '>for</span><span style='color:#308080; '>(</span><span style='color:#200080; font-weight:bold; '>int</span> y <span style='color:#308080; '>=</span> <span style='color:#008c00; '>0</span><span style='color:#406080; '>;</span> y <span style='color:#308080; '>&lt;</span> n<span style='color:#406080; '>;</span> <span style='color:#308080; '>+</span><span style='color:#308080; '>+</span>y<span style='color:#308080; '>)</span>
+	<span style='color:#200080; font-weight:bold; '>for</span><span style='color:#308080; '>(</span><span style='color:#200080; font-weight:bold; '>int</span> x <span style='color:#308080; '>=</span> <span style='color:#008c00; '>0</span><span style='color:#406080; '>;</span> x <span style='color:#308080; '>&lt;</span> m<span style='color:#406080; '>;</span> <span style='color:#308080; '>+</span><span style='color:#308080; '>+</span>x<span style='color:#308080; '>)</span>
+	<span style='color:#406080; '>{</span>
+		<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>		 * если это опасная клетка, мы в неё</span>
+<span style='color:#595979; '>		 * добраться никак не можем, поэтому</span>
+<span style='color:#595979; '>		 * устанавливаем ноль</span>
+<span style='color:#595979; '>		 */</span>
+		<span style='color:#200080; font-weight:bold; '>if</span><span style='color:#308080; '>(</span>f<span style='color:#308080; '>[</span>y<span style='color:#308080; '>]</span><span style='color:#308080; '>[</span>x<span style='color:#308080; '>]</span> <span style='color:#308080; '>&lt;</span> <span style='color:#008c00; '>0</span><span style='color:#308080; '>)</span>
+		<span style='color:#406080; '>{</span>
+			f<span style='color:#308080; '>[</span>y<span style='color:#308080; '>]</span><span style='color:#308080; '>[</span>x<span style='color:#308080; '>]</span> <span style='color:#308080; '>=</span> <span style='color:#008c00; '>0</span><span style='color:#406080; '>;</span>
+			<span style='color:#200080; font-weight:bold; '>continue</span><span style='color:#406080; '>;</span>
+		<span style='color:#406080; '>}</span>
+
+		<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>		 * мы можем добраться до текущей</span>
+<span style='color:#595979; '>		 * клетки либо сверху, либо слева:</span>
+<span style='color:#595979; '>		 * суммируем варианты добраться до</span>
+<span style='color:#595979; '>		 * соответствующих клеток (не забываем</span>
+<span style='color:#595979; '>		 * проверять, существует ли вообще</span>
+<span style='color:#595979; '>		 * такая клетка)</span>
+<span style='color:#595979; '>		 */</span>
+		<span style='color:#200080; font-weight:bold; '>if</span><span style='color:#308080; '>(</span>x <span style='color:#308080; '>></span> <span style='color:#008c00; '>0</span><span style='color:#308080; '>)</span>
+			f<span style='color:#308080; '>[</span>y<span style='color:#308080; '>]</span><span style='color:#308080; '>[</span>x<span style='color:#308080; '>]</span> <span style='color:#308080; '>+</span><span style='color:#308080; '>=</span> f<span style='color:#308080; '>[</span>y<span style='color:#308080; '>]</span><span style='color:#308080; '>[</span>x<span style='color:#308080; '>-</span><span style='color:#008c00; '>1</span><span style='color:#308080; '>]</span><span style='color:#406080; '>;</span>
+		<span style='color:#200080; font-weight:bold; '>if</span><span style='color:#308080; '>(</span>y <span style='color:#308080; '>></span> <span style='color:#008c00; '>0</span><span style='color:#308080; '>)</span>
+			f<span style='color:#308080; '>[</span>y<span style='color:#308080; '>]</span><span style='color:#308080; '>[</span>x<span style='color:#308080; '>]</span> <span style='color:#308080; '>+</span><span style='color:#308080; '>=</span> f<span style='color:#308080; '>[</span>y<span style='color:#308080; '>-</span><span style='color:#008c00; '>1</span><span style='color:#308080; '>]</span><span style='color:#308080; '>[</span>x<span style='color:#308080; '>]</span><span style='color:#406080; '>;</span>
+
+		<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>		 * значения могут быть очень большими,</span>
+<span style='color:#595979; '>		 * поэтому берём модуль</span>
+<span style='color:#595979; '>		 */</span>
+		f<span style='color:#308080; '>[</span>y<span style='color:#308080; '>]</span><span style='color:#308080; '>[</span>x<span style='color:#308080; '>]</span> <span style='color:#308080; '>=</span> MOD<span style='color:#308080; '>(</span>f<span style='color:#308080; '>[</span>y<span style='color:#308080; '>]</span><span style='color:#308080; '>[</span>x<span style='color:#308080; '>]</span><span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+	<span style='color:#406080; '>}</span>
+	
+	
+	
+	<span style='color:#595979; '>// output</span>
+	<span style='color:#595979; '>/*</span>
+<span style='color:#595979; '>	 * выводи, как добраться до</span>
+<span style='color:#595979; '>	 * клетки n m (изначальных,</span>
+<span style='color:#595979; '>	 * когда мы ещё не прибавили к ним</span>
+<span style='color:#595979; '>	 * единицу)</span>
+<span style='color:#595979; '>	 */</span>
+	<span style='color:#003060; '>printf</span><span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#007997; '>%lli</span><span style='color:#0f69ff; '>\n</span><span style='color:#800000; '>"</span><span style='color:#308080; '>,</span> f<span style='color:#308080; '>[</span>n<span style='color:#308080; '>-</span><span style='color:#008c00; '>1</span><span style='color:#308080; '>]</span><span style='color:#308080; '>[</span>m<span style='color:#308080; '>-</span><span style='color:#008c00; '>1</span><span style='color:#308080; '>]</span><span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+
+
+
+	<span style='color:#200080; font-weight:bold; '>return</span> <span style='color:#008c00; '>0</span><span style='color:#406080; '>;</span>
+<span style='color:#406080; '>}</span>
+
+
+
+
+
+<span style='color:#595979; '>// end</span>
+</pre>
+<!--Created using ToHtml.com on 2019-11-03 08:51:40 UTC -->
+			</p>
+			<h4> Ссылки </h4>
+			<div class="cutrefs">
+				<a href="https://mai2019.contest.codeforces.com/group/xp6oriuCgA/contest/258314/problem/F"> Задача </a>
+				<a href="https://www.youtube.com/watch?time_continue=1&v=ge_t_NAHayw"> Лекция </a>
+				<a href="https://www.youtube.com/watch?v=xcnTeHimB60"> Разбор задач Журавлёвым </a>
+			</div>
+		</main>
+	</body>
+
+</html>
